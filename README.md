@@ -56,7 +56,7 @@ If the audio file is missing or the browser cannot play it, the scrapbook will s
 
 ## Changing the twinkling cat GIF
 
-Open **Edit page**, choose a GIF under **Twinkling cat GIF**, and the page will use it right away. The selected file is saved in browser storage on this device only; it does not upload anywhere or alter the project. GIFs must be 2 MB or smaller. Choose **Use bundled GIF** to switch back.
+Open **Edit page** and choose a GIF under **Twinkling cat GIF** or **Birthday scene GIF**. The cat GIF animates across the site; the birthday scene GIF replaces the illustration after **Click here** and in the celebration. The selected files are saved in browser storage on this device only; they do not upload anywhere or alter the project. GIFs must be 2 MB or smaller. Use the reset buttons to switch back to the bundled images.
 
 To change the default GIF for the project, replace this file with your own GIF while keeping the same filename:
 
@@ -71,6 +71,8 @@ The animation settings are in `src/data/birthdayContent.js` under `twinklingCats
 - `gifPath` sets the default GIF path.
 
 The cat size and twinkle timing are set in `src/main.jsx` and `src/styles.css`. Current sizes range from 52 to 75 pixels on desktop and cap at 52 pixels on mobile.
+
+To change the default birthday scene, replace `public/assets/photos/birthday-illustration.jpg` and keep the filename, or update `teddySurprise.photo` in `src/data/birthdayContent.js`.
 ## Adding photographs
 
 All photographs belong in:

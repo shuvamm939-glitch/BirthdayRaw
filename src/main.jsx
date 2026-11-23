@@ -5,7 +5,7 @@ import { birthdayContent as content, twinklingCatsConfig } from './data/birthday
 import './styles.css';
 
 const symbol = (code) => String.fromCodePoint(code);
-const photoUrl = (src) => src ? (src.startsWith('/') ? src : `/assets/photos/${src}`) : '';
+const photoUrl = (src) => src ? (/^(\/|data:|blob:|https?:)/.test(src) ? src : `/assets/photos/${src}`) : '';
 const STORAGE_KEY = 'scrapbook-content-v1';
 const baseContent = { ...content, memories: content.memories.map((item) => ({ ...item })), filmPhotos: [...content.filmPhotos] };
 function loadContent() {
@@ -133,7 +133,7 @@ function FilmStrip({ onPhotoClick }) {
     <div className="sprockets bottom"/></div><p className="film-caption">{content.filmCaption}</p></section>;
 }
 
-function TeddySurprise() {
+function TeddySurprise({ photoOverride = '' }) {
   const [stage, setStage] = useState('idle');
   const [noLine, setNoLine] = useState(false);
   useEffect(() => {
@@ -146,12 +146,13 @@ function TeddySurprise() {
     window.setTimeout(() => { setNoLine(false); setStage('celebration'); }, 1050);
   };
   const config = content.teddySurprise || {};
+  const surprisePhoto = photoOverride || photoUrl(config.photo || 'birthday-illustration.jpg');
   return <section className="teddy-surprise-section">
     <span className="eyebrow">A TINY SURPRISE</span>
     <h2>A little visitor is waiting</h2>
     {stage === 'idle' && <button className="teddy-surprise-trigger" onClick={() => setStage('greeting')}>Click here <span aria-hidden="true">â†—</span></button>}
     {stage !== 'idle' && stage !== 'celebration' && <div className="teddy-surprise-scene">
-      <div className="teddy-surprise-photo-window"><img src={photoUrl(config.photo || 'birthday-illustration.jpg')} alt="A cheerful hand-drawn birthday celebration" /></div>
+      <div className="teddy-surprise-photo-window"><img src={surprisePhoto} alt="A cheerful hand-drawn birthday celebration" /></div>
       <p className="teddy-surprise-greeting">{config.greeting || 'Happy Birthday!'}</p>
     </div>}
     {noLine && createPortal(<div className="teddy-surprise-no-line" role="status">{config.noButtonText}</div>, document.body)}
@@ -166,7 +167,7 @@ function TeddySurprise() {
           <div className="teddy-surprise-cake-topper"><img src={photoUrl(config.cakePhoto || 'birthday-cat.jpg')} alt="A waving orange cat" /></div>
           <div className="teddy-surprise-cake-top"/><div className="teddy-surprise-cake-tier cake-tier-upper"/><div className="teddy-surprise-cake-tier cake-tier-lower"/><div className="teddy-surprise-cake-plate"/>
         </div>
-        <div className="teddy-surprise-real-photo"><img src={photoUrl(config.photo || 'birthday-illustration.jpg')} alt="A cheerful hand-drawn birthday celebration" /></div><p className="teddy-surprise-wish">{config.bestWish || content.birthdayWish}</p></div>
+        <div className="teddy-surprise-real-photo"><img src={surprisePhoto} alt="A cheerful hand-drawn birthday celebration" /></div><p className="teddy-surprise-wish">{config.bestWish || content.birthdayWish}</p></div>
     </div>, document.body)}
   </section>;
 }
@@ -240,6 +241,10 @@ function App() {
     try { return localStorage.getItem('scrapbook-cat-gif-v1') || ''; } catch { return ''; }
   });
   const [catGifMessage, setCatGifMessage] = useState('');
+  const [surpriseGifOverride, setSurpriseGifOverride] = useState(() => {
+    try { return localStorage.getItem('scrapbook-surprise-gif-v1') || ''; } catch { return ''; }
+  });
+  const [surpriseGifMessage, setSurpriseGifMessage] = useState('');
   const audioRef = useRef(null);
 
   Object.assign(content, pageContent);
@@ -292,6 +297,37 @@ function App() {
     setCatGifOverride('');
     setCatGifMessage('Using the bundled cat GIF.');
   };
+  const updateSurpriseGif = (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    if (!(file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif'))) {
+      setSurpriseGifMessage('Choose a .gif file.');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setSurpriseGifMessage('That GIF is over 2 MB. Choose a smaller file for reliable local storage.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const gifData = String(reader.result || '');
+        localStorage.setItem('scrapbook-surprise-gif-v1', gifData);
+        setSurpriseGifOverride(gifData);
+        setSurpriseGifMessage(`${file.name} saved in this browser.`);
+      } catch {
+        setSurpriseGifMessage('This GIF could not be saved. Try a smaller file or replace the default image in public/assets/photos/.');
+      }
+    };
+    reader.onerror = () => setSurpriseGifMessage('Could not read that GIF file.');
+    reader.readAsDataURL(file);
+  };
+  const resetSurpriseGif = () => {
+    try { localStorage.removeItem('scrapbook-surprise-gif-v1'); } catch { /* Keep the bundled image if storage is unavailable. */ }
+    setSurpriseGifOverride('');
+    setSurpriseGifMessage('Using the bundled birthday image.');
+  };
 
   const playMusic = () => {
     const audio = audioRef.current;
@@ -324,6 +360,7 @@ function App() {
     <button className="customize-toggle" onClick={() => setEditorOpen((value) => !value)} aria-expanded={editorOpen}>Edit page</button>
     {editorOpen && <aside className="customize-panel" aria-label="Customize this site"><div className="customize-heading"><div><span className="eyebrow">PAGE SETTINGS</span><h2>Edit this page</h2></div><button onClick={() => setEditorOpen(false)} aria-label="Close customization">Ã—</button></div><p>Text changes are saved in this browser. To change photos or music, edit <code>src/data/birthdayContent.js</code>.</p>
       <section className="cat-gif-editor" aria-label="Cat star GIF settings"><h3>Twinkling cat GIF</h3><p>Choose a GIF from your device. It is saved only in this browser and does not change the project files.</p><label className="cat-gif-upload">Choose a GIF<input type="file" accept="image/gif,.gif" onChange={updateCatGif}/></label><button className="cat-gif-reset" type="button" onClick={resetCatGif}>Use bundled GIF</button>{catGifOverride && <img className="cat-gif-preview" src={catGifOverride} alt="Current custom cat GIF preview"/>}{catGifMessage && <p className="cat-gif-status" role="status">{catGifMessage}</p>}</section>
+      <section className="cat-gif-editor" aria-label="Birthday surprise GIF settings"><h3>Birthday scene GIF</h3><p>Replace the birthday illustration shown after “Click here” and in the celebration. This saves only in this browser.</p><label className="cat-gif-upload">Choose a GIF<input type="file" accept="image/gif,.gif" onChange={updateSurpriseGif}/></label><button className="cat-gif-reset" type="button" onClick={resetSurpriseGif}>Use bundled image</button>{surpriseGifOverride && <img className="cat-gif-preview" src={surpriseGifOverride} alt="Current birthday scene GIF preview"/>}{surpriseGifMessage && <p className="cat-gif-status" role="status">{surpriseGifMessage}</p>}</section>
       {[
         ['siteTitle', 'Browser tab / site name'], ['occasion', 'Occasion'], ['recipient', 'Personâ€™s name'], ['coverKicker', 'Cover top line'], ['coverNote', 'Cover note'], ['cardLead', 'Envelope card lead'], ['cardText', 'Envelope card message'], ['turnPrompt', 'Page turn prompt'], ['openingPrompt', 'Open button'], ['birthdayGreeting', 'Greeting'], ['birthdayNumber', 'Big page heading'], ['badgeText', 'Badge text'], ['introduction', 'Introduction'], ['openingCaption', 'Cover photo caption'], ['memoriesEyebrow', 'Memories section label'], ['memoriesHeading', 'Memories heading'], ['memoriesSubheading', 'Memories intro'], ['filmEyebrow', 'Photo strip label'], ['filmHeading', 'Photo strip heading'], ['filmCaption', 'Photo strip caption'], ['letterLabel', 'Letter label'], ['letter', 'Letter message'], ['signOff', 'Letter sign-off'], ['signature', 'Signature'], ['hiddenNoteLabel', 'Hidden note button'], ['hiddenNote', 'Hidden note'], ['wishButton', 'Wish button'], ['birthdayWish', 'Wish message']
       ].map(([key, label]) => <label className="customize-field" key={key}>{label}<textarea rows={['letter', 'introduction', 'hiddenNote', 'birthdayWish'].includes(key) ? 3 : 1} value={pageContent[key] || ''} onChange={(event) => updateField(key, event.target.value)} /></label>)}
@@ -334,7 +371,7 @@ function App() {
     <MusicControl playing={playing} unavailable={audioUnavailable} onToggle={toggleMusic}/>
     <div className={`experience ${opened ? 'experience-opened' : ''}`}><div className="book-intro"><span className="eyebrow">A BOOK OF LITTLE THINGS</span>
       {opened && <div className="birthday-greeting"><span>{content.recipient.split(' ')[0]}</span><h2>{content.birthdayGreeting}</h2></div>}
-    </div><Book opened={opened} onPhotoClick={showPhoto}/><Memories onPhotoClick={showPhoto}/><FilmStrip onPhotoClick={showPhoto}/><TeddySurprise/><Letter note={note} setNote={setNote}/><LittleReminder/><BirthdayMoment wished={wished} onWish={() => setWished((value) => !value)}/><footer className="closing"><Flower/><p>Happy birthday,</p><h2>{content.recipient}</h2><span>{symbol(0x2661)}</span></footer></div>
+    </div><Book opened={opened} onPhotoClick={showPhoto}/><Memories onPhotoClick={showPhoto}/><FilmStrip onPhotoClick={showPhoto}/><TeddySurprise photoOverride={surpriseGifOverride}/><Letter note={note} setNote={setNote}/><LittleReminder/><BirthdayMoment wished={wished} onWish={() => setWished((value) => !value)}/><footer className="closing"><Flower/><p>Happy birthday,</p><h2>{content.recipient}</h2><span>{symbol(0x2661)}</span></footer></div>
     <Lightbox photo={lightbox} onClose={() => setLightbox(null)}/>
   </main>;
 }
