@@ -216,7 +216,7 @@ The `decorations`, `icons` and `textures` folders are available for additional a
 When the site is ready, create a production build:
 
 ```bash
-npm run build
+npm.cmd run build
 ```
 
 Vite will generate the production files inside:
