@@ -1,211 +1,72 @@
-# A Birthday Scrapbook ♡
+# Birthday Scrapbook
 
-A little birthday website made for **Pratyusha Ghosh**.
+A little birthday scrapbook made with React and Vite, put together with photos, memories, music and a few interactive details.
 
-This project started with a simple idea: turn a few photographs, memories and personal words into something that feels like opening a handmade scrapbook.
+The idea is simple: open an envelope, turn through a collection of scrapbook-style pages, revisit some memories and find a few personal notes along the way.
 
-It has an envelope-style opening, scrapbook pages, Polaroid photographs, a film strip and a birthday letter. The content is kept separate from the design, so personal details can be changed without digging through the main React components.
+The design uses a burgundy background, paper-style pages, Polaroid frames, a film strip and a handwritten-style letter. The words, photos and music are all kept separate from the main components, so they're easy to change without having to dig through the UI code.
 
----
+## Getting started
 
-## Preview
+You'll need [Node.js](https://nodejs.org/) installed on your computer. npm comes with it.
 
-The experience is built around:
+Clone the repository or download the project, then open a terminal inside the project folder (the one containing `package.json`).
 
-- An envelope-inspired opening screen
-- A scrapbook-style birthday book
-- Personal introduction and birthday message
-- Polaroid-style memory photographs
-- A five-frame film strip gallery
-- A final birthday letter and closing section
-
-## Tech Stack
-
-- **React** — UI components
-- **JavaScript** — application logic
-- **CSS** — layout, styling and animations
-- **Vite** — development server and build tool
-
-## Project Structure
-
-```text
-BirthdayRaw-main/
-│
-├── public/
-│   └── assets/
-│       ├── decorations/
-│       ├── icons/
-│       ├── photos/
-│       └── textures/
-│
-├── src/
-│   ├── data/
-│   │   └── birthdayContent.js
-│   │
-│   ├── main.jsx
-│   └── styles.css
-│
-├── .gitignore
-├── index.html
-├── package.json
-├── package-lock.json
-└── README.md
-```
-
-## Getting Started
-
-Follow these steps to run the project on your computer.
-
-### 1. Install Node.js
-
-Download and install the LTS version of Node.js:
-
-https://nodejs.org/
-
-Node.js comes with npm, which is used to install the project's dependencies.
-
-After installation, open a terminal and check:
-
-```bash
-node -v
-npm -v
-```
-
-If both commands display version numbers, you're ready.
-
-### 2. Download the Project
-
-Download or clone this repository.
-
-To clone it using Git:
-
-```bash
-git clone YOUR_REPOSITORY_URL
-```
-
-Alternatively, download the ZIP from GitHub and extract it.
-
-### 3. Open the Correct Folder
-
-Open the extracted project in VS Code.
-
-Make sure you open the folder containing these files:
-
-```text
-package.json
-package-lock.json
-index.html
-src/
-public/
-```
-
-**Important:** Do not run npm commands from the parent folder. Open the actual `BirthdayRaw-main` project folder.
-
-### 4. Open the VS Code Terminal
-
-In VS Code:
-
-1. Open the project folder.
-2. Select **Terminal** from the top menu.
-3. Click **New Terminal**.
-4. Check that the terminal is inside the folder containing `package.json`.
-
-You can check your current location with:
+On Windows PowerShell, install the dependencies with:
 
 ```powershell
-pwd
+npm.cmd install
 ```
 
-You can check the files in that folder with:
+Start the development server:
 
 ```powershell
-dir
+npm.cmd run dev
 ```
 
-### 5. Install Dependencies
-
-Run:
-
-```bash
-npm install
-```
-
-This reads `package.json` and installs the required packages into `node_modules`.
-
-Wait until the installation finishes.
-
-### 6. Start the Development Server
-
-Run:
-
-```bash
-npm run dev
-```
-
-Vite will start the local development server.
-
-Open the URL shown in your terminal. It is usually:
+Vite will print a local URL in the terminal. Open that address in your browser. By default, it's:
 
 ```text
 http://localhost:5173/
 ```
 
-Keep the terminal running while you work on the website.
+Keep the terminal open while working on the site. To stop the development server, press `Ctrl + C`.
 
-To stop the server, press:
+On macOS/Linux terminals, use `npm install` and `npm run dev` instead.
 
-```text
-Ctrl + C
-```
+The project also loads its fonts through Google Fonts. An internet connection is needed for those fonts; otherwise, the browser will use its default serif fallbacks.
 
----
+## Adding the music
 
-## Customizing the Website
+The birthday song is loaded from a local MP3 file.
 
-You do not need to edit the main React components to change the birthday content.
-
-Most of the personal information is stored in:
+Place your audio file here:
 
 ```text
-src/data/birthdayContent.js
+public/assets/music/music.mp3
 ```
 
-Open that file in VS Code.
+That's all you need to do. Keep the filename the same, or update the audio path in the relevant source code if you prefer a different name.
 
-### 1. Change the Text
+The music doesn't start automatically when the page loads. It is triggered by clicking **Open Me**, alongside the envelope-opening animation. The app leaves playback at full volume (100%); the device volume controls how loud it sounds.
 
-The content file contains these fields:
+There's also a small music control in the corner of the page for pausing and resuming playback.
 
-| Field | What it changes |
-|---|---|
-| `recipient` | Recipient's name |
-| `birthdayNumber` | Birthday heading |
-| `coverNote` | Text on the opening screen |
-| `openingPrompt` | Envelope button text |
-| `openingPhoto` | Main opening photograph |
-| `openingCaption` | Caption below that photograph |
-| `introduction` | Introductory paragraph |
-| `memories` | Three memory sections |
-| `filmPhotos` | Five film strip photographs |
-| `letter` | Main birthday letter |
-| `signOff` | Letter sign-off |
-| `signature` | Sender's name |
+If the audio file is missing or the browser cannot play it, the scrapbook will still open and work normally. Only the music will be unavailable.
 
-Write your own messages inside the quotation marks.
+## Adding photographs
 
-### 2. Add Your Photographs
-
-Put your photographs inside:
+All photographs belong in:
 
 ```text
 public/assets/photos/
 ```
 
-For example:
+For example, you could organise them like this:
 
 ```text
 public/assets/photos/
-├── cover.jpg
+├── cover-photo.jpg
 ├── memory-01.jpg
 ├── memory-02.jpg
 ├── memory-03.jpg
@@ -216,41 +77,37 @@ public/assets/photos/
 └── film-05.jpg
 ```
 
-You can use JPG, PNG or WebP images.
-
-### 3. Connect the Photographs
-
-Open:
+Once the images are in place, open:
 
 ```text
 src/data/birthdayContent.js
 ```
 
-Add the image filenames to the relevant fields.
+This file contains the image paths used throughout the scrapbook.
 
-For example:
+Here's an example:
 
 ```js
-openingPhoto: "cover.jpg",
+openingPhoto: "cover-photo.jpg",
 
 memories: [
   {
     image: "memory-01.jpg",
-    label: "01 · A day to keep",
-    caption: "Your caption",
-    note: "Your memory"
+    label: "01 - A day to keep",
+    caption: "[ADD MEMORY CAPTION]",
+    note: "[ADD YOUR PARAGRAPH HERE]"
   },
   {
     image: "memory-02.jpg",
-    label: "02 · Little moments",
-    caption: "Your caption",
-    note: "Your memory"
+    label: "02 - Little moments",
+    caption: "[ADD MEMORY CAPTION]",
+    note: "[ADD YOUR PARAGRAPH HERE]"
   },
   {
     image: "memory-03.jpg",
-    label: "03 · Just us",
-    caption: "Your caption",
-    note: "Your memory"
+    label: "03 - Just us",
+    caption: "[ADD MEMORY CAPTION]",
+    note: "[ADD YOUR PARAGRAPH HERE]"
   },
 ],
 
@@ -259,100 +116,164 @@ filmPhotos: [
   "film-02.jpg",
   "film-03.jpg",
   "film-04.jpg",
-  "film-05.jpg"
+  "film-05.jpg",
 ],
 ```
 
-The project automatically looks for these filenames inside `public/assets/photos/`.
+A filename is enough; the application looks for it inside `public/assets/photos/`.
 
-**A small detail:** If you leave an image field empty, the website displays its handmade photo placeholder instead.
+You can leave an image field empty (`""`) if you don't want to use a photograph in that particular frame.
 
-### 4. Change the Design
+Images are fitted into the existing scrapbook layouts, so some cropping is expected depending on their dimensions. Keep the original photos if you want to use them elsewhere.
 
-The main stylesheet is:
+Loaded photographs can be clicked to view them in a larger lightbox. Press `Escape`, click outside the image or use the close button to exit.
 
-```text
-src/styles.css
-```
+## Changing the content
 
-This is where you can adjust colours, typography, spacing, layout and visual effects.
-
-The main React components are inside:
+All the personal content is managed from one place:
 
 ```text
-src/main.jsx
+src/data/birthdayContent.js
 ```
 
-Edit this file only when you want to change how the website behaves or how its sections are structured.
+You don't need to edit the main React components just to change a caption, message or photograph.
 
----
+Here's what each field controls:
 
-## Building the Website
+| Field | Used for |
+| --- | --- |
+| `recipient` | Recipient's name throughout the scrapbook. |
+| `birthdayGreeting` | Birthday greeting shown after opening. |
+| `birthdayNumber` | Large heading on the left-hand page. |
+| `coverNote` | Small handwritten line on the envelope. |
+| `openingPrompt` | Text displayed on the envelope button. |
+| `openingPhoto` | Photograph on the opening page. |
+| `openingCaption` | Caption below the opening photograph. |
+| `introduction` | Introductory paragraph on the first page. |
+| `memories` | Three memory entries with photos, captions and notes. |
+| `filmPhotos` | Five photographs in the horizontal film strip. |
+| `letter` | Main birthday letter. |
+| `signOff` | Closing line of the letter. |
+| `signature` | Signature below the letter. |
+| `hiddenNote` | Message revealed through the little note interaction. |
+| `birthdayWish` | Message revealed through the birthday wish interaction. |
 
-When everything is ready, run:
+The recipient is currently set up for **Pratyusha Ghosh**. Change it in the data file if needed.
+
+For longer messages, JavaScript strings support `\n` for line breaks:
+
+```js
+letter: "First paragraph.\n\nSecond paragraph.",
+```
+
+One small thing worth remembering: don't remove the quotation marks, commas or brackets when editing the file. They're part of the JavaScript syntax.
+
+The scrapbook provides the layout and interactions; the actual personal messages and memories need to be added manually.
+
+## Project structure
+
+The main files are organised as follows:
+
+```text
+Birthday/
+│
+├── public/
+│   └── assets/
+│       ├── decorations/
+│       ├── icons/
+│       ├── music/
+│       │   └── music.mp3
+│       ├── photos/
+│       └── textures/
+│
+├── src/
+│   ├── data/
+│   │   └── birthdayContent.js
+│   │
+│   ├── main.jsx
+│   └── styles.css
+│
+├── index.html
+├── package.json
+├── package-lock.json
+└── README.md
+```
+
+A quick note on the folders:
+
+- `src/main.jsx` contains the React components and interactions.
+- `src/styles.css` handles the scrapbook layout, styling, animations and responsive behaviour.
+- `src/data/birthdayContent.js` holds the personal content and image references.
+- `public/assets/` is where the photographs, music and optional assets live.
+- `index.html` contains the page metadata and font loading.
+
+The `decorations`, `icons` and `textures` folders are available for additional assets. The current scrapbook artwork is primarily CSS-based, so those folders don't need to contain anything for the site to work.
+
+`node_modules/` and `dist/` are generated locally. There's no need to edit them.
+
+## Building for production
+
+When the site is ready, create a production build:
 
 ```bash
 npm run build
 ```
 
-Vite creates an optimized production version inside:
+Vite will generate the production files inside:
 
 ```text
 dist/
 ```
 
-To preview the production build locally:
+To run a local preview of that build:
 
 ```bash
 npm run preview
 ```
 
----
+On Windows PowerShell, use:
 
-## Deploying with Vercel
-
-You can host the website for free using Vercel.
-
-1. Push your latest project files to GitHub.
-2. Visit https://vercel.com/
-3. Sign in using your GitHub account.
-4. Click **Add New → Project**.
-5. Import your birthday website repository.
-6. Keep the framework preset as **Vite**.
-7. Set the build command to:
-
-```bash
-npm run build
+```powershell
+npm.cmd run build
+npm.cmd run preview
 ```
 
-8. Set the output directory to:
+## Deployment
 
-```text
-dist
-```
+The project is a standard Vite application, so it can be deployed using Vercel, Netlify or another static hosting provider.
 
-9. Click **Deploy**.
+For Vercel or Netlify:
 
-After deployment, Vercel will provide a public website link that you can share.
+1. Push the project to a Git repository.
+2. Import the repository into your hosting provider.
+3. Select the Vite framework preset.
+4. Set the build command to `npm run build`.
+5. Set the output directory to `dist`.
+6. Deploy the project.
 
-Whenever you push new changes to the connected GitHub repository, Vercel can automatically deploy the updated version.
+Before sharing the link, check that the photographs and MP3 file are included in the repository and that their paths are correct.
+
+It's also worth opening the deployed site on a phone and checking the envelope animation, page layout, music controls, photo lightbox and interactive notes.
+
+## GitHub Pages Deployment
+
+The project deploys to GitHub Pages through GitHub Actions whenever you push to the `main` branch.
+
+1. Commit and push your changes from the project folder:
+
+   ```bash
+   git add .
+   git commit -m "Update birthday website"
+   git push origin main
+   ```
+
+2. In the GitHub repository, open **Settings → Pages** and set **Source** to **GitHub Actions**.
+3. Check the **Actions** tab in the repository to see the build and deployment status.
+4. After a successful deployment, the website will be available at <https://dominator1237479.github.io/Birtday-01-host/>.
+5. Future pushes to `main` automatically build and publish the latest website.
+
+GitHub Pages on a free account requires a public repository. The published website is visible to anyone with the link.
 
 ---
 
-## Before You Deploy
-
-- [ ] Replace all placeholder text.
-- [ ] Add your photographs.
-- [ ] Check every image path.
-- [ ] Run `npm install`.
-- [ ] Test using `npm run dev`.
-- [ ] Check the website on mobile and desktop.
-- [ ] Run `npm run build`.
-- [ ] Push the final version to GitHub.
-- [ ] Deploy through Vercel.
-
----
-
-A small collection of photographs, words and memories, made into a little corner of the internet.
-
-**Made with care. ♡**
+Made with a little time, a lot of memories, and the intention of making someone's birthday a bit more special.
