@@ -4,6 +4,14 @@ import { birthdayContent as content } from './data/birthdayContent';
 import './styles.css';
 
 const symbol = (code) => String.fromCodePoint(code);
+const STORAGE_KEY = 'scrapbook-content-v1';
+const baseContent = { ...content, memories: content.memories.map((item) => ({ ...item })), filmPhotos: [...content.filmPhotos] };
+function loadContent() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return saved ? { ...baseContent, ...saved } : baseContent;
+  } catch { return baseContent; }
+}
 
 function Photo({ src, alt, className = '', number = '01', onPhotoClick }) {
   const [failed, setFailed] = useState(false);
@@ -21,7 +29,7 @@ function Camera() { return <div className="camera" aria-hidden="true"><div class
 
 function Opening({ onOpen, opened }) {
   return <section className="opening" aria-label="Birthday card cover">
-    <span className="cover-kicker">A LITTLE SURPRISE FOR</span>
+    <span className="cover-kicker">{content.coverKicker}</span>
     <h1>{content.recipient}</h1>
     <p className="cover-note">{content.coverNote}</p>
     <div className="cover-stage">
@@ -31,7 +39,7 @@ function Opening({ onOpen, opened }) {
         <div className="envelope-shadow" />
         <div className="envelope">
           <div className="envelope-back" />
-          <div className="mini-card"><span>For my</span><strong>favorite<br/>person</strong><i>{symbol(0x2665)}</i></div>
+          <div className="mini-card"><span>{content.cardLead}</span><strong>{content.cardText}</strong><i>{symbol(0x2665)}</i></div>
           <div className="envelope-front" />
           <div className="envelope-flap" />
           <button className="open-button" onClick={onOpen} disabled={opened}><span>{symbol(0x2726)}</span> {content.openingPrompt} <span>{symbol(0x2726)}</span></button>
@@ -40,7 +48,7 @@ function Opening({ onOpen, opened }) {
       <div className="bouquet" aria-hidden="true"><div className="bouquet-wrap"/><i>{symbol(0x273f)}</i><b>{symbol(0x273e)}</b><span>{symbol(0x2740)}</span><em>{symbol(0x273f)}</em><small>{symbol(0x273d)}</small></div>
       <div className="paper-scrap scrap-right">with love<br/><b>{symbol(0x2661)}</b></div>
     </div>
-    <div className="cover-bottom">TURN A LITTLE PAGE <span>{symbol(0x2193)}</span></div>
+    <div className="cover-bottom">{content.turnPrompt} <span>{symbol(0x2193)}</span></div>
   </section>;
 }
 
@@ -53,14 +61,14 @@ function Book({ opened, onPhotoClick }) {
       <span className="page-number">A LITTLE CELEBRATION - {content.recipient.toUpperCase()}</span>
       <div className="page-sprig">{symbol(0x273f)}　{symbol(0x2727)}　{symbol(0x273f)}</div>
       <h2>{content.birthdayNumber}</h2>
-      <div className="year-badge">{symbol(0x2726)} &nbsp; TODAY IS ALL YOURS &nbsp; {symbol(0x2726)}</div>
+      <div className="year-badge">{symbol(0x2726)} &nbsp; {content.badgeText} &nbsp; {symbol(0x2726)}</div>
       <div className="intro-copy">{content.introduction}</div>
       <div className="tiny-heart">{symbol(0x2661)}</div>
       <div className="page-footer"><span>made with love</span><span>01</span></div>
     </article>
     <article className="book-page right-page">
       <div className="tape tape-top" />
-      <div className="photo-frame opening-frame"><Photo src={content.openingPhoto} alt="A photograph for Pratyusha" number="01" onPhotoClick={onPhotoClick} /></div>
+      <div className="photo-frame opening-frame"><Photo src={content.openingPhoto} alt={`A photograph for ${content.recipient}`} number="01" onPhotoClick={onPhotoClick} /></div>
       <p className="photo-caption">{content.openingCaption}</p>
       <div className="sticker-star">{symbol(0x2726)}</div><div className="sticker-flower">{symbol(0x273f)}</div>
       <div className="page-footer"><span>our little story</span><span>02</span></div>
@@ -70,29 +78,29 @@ function Book({ opened, onPhotoClick }) {
 
 function Memories({ onPhotoClick }) {
   return <section className="memories section-wrap">
-    <div className="section-heading"><span className="eyebrow">THE DAYS I KEEP CLOSE</span><h2>A few of my <em>favorite</em> things</h2><p>Little pieces of time, tucked safely in these pages.</p></div>
+    <div className="section-heading"><span className="eyebrow">{content.memoriesEyebrow}</span><h2>{content.memoriesHeading}</h2><p>{content.memoriesSubheading}</p></div>
     {content.memories.map((memory, index) => <article className={`memory-row row-${index + 1}`} key={memory.label}>
       <div className="memory-photo-wrap"><div className="tape memory-tape"/><div className="polaroid"><Photo src={memory.image} alt={memory.caption} number={`0${index + 2}`} onPhotoClick={onPhotoClick} /><div className="polaroid-caption">{memory.caption}</div></div><span className="doodle">{symbol(0x2727)}</span></div>
-      <div className="memory-copy"><span className="eyebrow">{memory.label}</span><h3>{index === 0 ? 'A moment, held still' : index === 1 ? 'The ordinary magic' : 'A little more us'}</h3><p>{memory.note}</p><span className="hand-heart">{symbol(0x2661)}</span></div>
+      <div className="memory-copy"><span className="eyebrow">{memory.label}</span><h3>{memory.heading}</h3><p>{memory.note}</p><span className="hand-heart">{symbol(0x2661)}</span></div>
     </article>)}
   </section>;
 }
 
 function FilmStrip({ onPhotoClick }) {
-  return <section className="film-section"><div className="film-title"><span>SNIPPETS OF US</span><h2>Life, in little frames</h2></div><div className="film-strip"><div className="sprockets"/>
+  return <section className="film-section"><div className="film-title"><span>{content.filmEyebrow}</span><h2>{content.filmHeading}</h2></div><div className="film-strip"><div className="sprockets"/>
     {content.filmPhotos.map((src, i) => <div className="film-frame" key={i}><Photo src={src} alt={`Film memory ${i + 1}`} number={`0${i + 5}`} onPhotoClick={onPhotoClick} /><span>{symbol(0x2726)}</span></div>)}
-    <div className="sprockets bottom"/></div><p className="film-caption">every little thing, worth remembering</p></section>;
+    <div className="sprockets bottom"/></div><p className="film-caption">{content.filmCaption}</p></section>;
 }
 
 function Letter({ note, setNote }) {
-  return <section className="letter-section"><div className="letter-paper"><div className="letter-tape"/><span className="letter-date">A NOTE FOR YOUR BIRTHDAY</span><div className="letter-flower">{symbol(0x273f)}</div><h2>Dear {content.recipient.split(' ')[0]},</h2><p>{content.letter}</p><p className="letter-signoff">{content.signOff}<br/><span>{content.signature}</span></p><div className="letter-seal">{symbol(0x2665)}</div>
-    <div className="personal-note-area"><button className="paper-link" onClick={() => setNote(!note)} aria-expanded={note}>A little note for you <span>{note ? '-' : '+'}</span></button>{note && <div className="hidden-note" role="status">{content.hiddenNote}</div>}</div>
+  return <section className="letter-section"><div className="letter-paper"><div className="letter-tape"/><span className="letter-date">{content.letterLabel}</span><div className="letter-flower">{symbol(0x273f)}</div><h2>Dear {content.recipient.split(' ')[0]},</h2><p>{content.letter}</p><p className="letter-signoff">{content.signOff}<br/><span>{content.signature}</span></p><div className="letter-seal">{symbol(0x2665)}</div>
+    <div className="personal-note-area"><button className="paper-link" onClick={() => setNote(!note)} aria-expanded={note}>{content.hiddenNoteLabel} <span>{note ? '-' : '+'}</span></button>{note && <div className="hidden-note" role="status">{content.hiddenNote}</div>}</div>
   </div></section>;
 }
 
 function BirthdayMoment({ wished, onWish }) {
   return <section className={`wish-section ${wished ? 'wish-revealed' : ''}`} aria-label="Birthday wish">
-    <button className="wish-button" onClick={onWish} aria-expanded={wished}>Make a little wish</button>
+    <button className="wish-button" onClick={onWish} aria-expanded={wished}>{content.wishButton}</button>
     {wished && <div className="wish-reveal" role="status"><div className="wish-stars" aria-hidden="true">{symbol(0x2726)}　{symbol(0x2727)}　{symbol(0x2726)}</div><p>{content.birthdayWish}</p></div>}
   </section>;
 }
@@ -120,6 +128,8 @@ function Lightbox({ photo, onClose }) {
 }
 
 function App() {
+  const [pageContent, setPageContent] = useState(loadContent);
+  const [editorOpen, setEditorOpen] = useState(false);
   const [opened, setOpened] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [audioUnavailable, setAudioUnavailable] = useState(false);
@@ -127,6 +137,12 @@ function App() {
   const [wished, setWished] = useState(false);
   const [lightbox, setLightbox] = useState(null);
   const audioRef = useRef(null);
+
+  Object.assign(content, pageContent);
+  useEffect(() => { document.title = pageContent.siteTitle || `${pageContent.recipient} · ${pageContent.occasion}`; }, [pageContent]);
+  const updateField = (key, value) => setPageContent((current) => ({ ...current, [key]: value }));
+  const saveContent = () => { localStorage.setItem(STORAGE_KEY, JSON.stringify(pageContent)); setEditorOpen(false); };
+  const resetContent = () => { localStorage.removeItem(STORAGE_KEY); setPageContent(baseContent); };
 
   const playMusic = () => {
     const audio = audioRef.current;
@@ -150,7 +166,17 @@ function App() {
   const showPhoto = (src, alt) => setLightbox({ src, alt });
 
   return <main>
-    <audio ref={audioRef} src="/assets/music/birthday-song.mp3" preload="none" loop onPlay={() => { setPlaying(true); setAudioUnavailable(false); }} onPause={() => setPlaying(false)} onError={() => { setPlaying(false); setAudioUnavailable(true); }} />
+    <audio ref={audioRef} src={pageContent.musicPath || '/assets/music/birthday-song.mp3'} preload="none" loop onPlay={() => { setPlaying(true); setAudioUnavailable(false); }} onPause={() => setPlaying(false)} onError={() => { setPlaying(false); setAudioUnavailable(true); }} />
+    <button className="customize-toggle" onClick={() => setEditorOpen((value) => !value)} aria-expanded={editorOpen}>✎ Customize</button>
+    {editorOpen && <aside className="customize-panel" aria-label="Customize this site"><div className="customize-heading"><div><span className="eyebrow">YOUR LOCAL COPY</span><h2>Make it yours</h2></div><button onClick={() => setEditorOpen(false)} aria-label="Close customization">×</button></div><p>Changes save in this browser on this device.</p>
+      {[
+        ['siteTitle', 'Browser tab / site name'], ['occasion', 'Occasion'], ['recipient', 'Person’s name'], ['coverKicker', 'Cover top line'], ['coverNote', 'Cover note'], ['cardLead', 'Envelope card lead'], ['cardText', 'Envelope card message'], ['turnPrompt', 'Page turn prompt'], ['openingPrompt', 'Open button'], ['birthdayGreeting', 'Greeting'], ['birthdayNumber', 'Big page heading'], ['badgeText', 'Badge text'], ['introduction', 'Introduction'], ['openingPhoto', 'Cover photo filename'], ['openingCaption', 'Cover photo caption'], ['memoriesEyebrow', 'Memories section label'], ['memoriesHeading', 'Memories heading'], ['memoriesSubheading', 'Memories intro'], ['filmEyebrow', 'Photo strip label'], ['filmHeading', 'Photo strip heading'], ['filmCaption', 'Photo strip caption'], ['letterLabel', 'Letter label'], ['letter', 'Letter message'], ['signOff', 'Letter sign-off'], ['signature', 'Signature'], ['hiddenNoteLabel', 'Hidden note button'], ['hiddenNote', 'Hidden note'], ['wishButton', 'Wish button'], ['birthdayWish', 'Wish message']
+      ].map(([key, label]) => <label className="customize-field" key={key}>{label}<textarea rows={['letter', 'introduction', 'hiddenNote', 'birthdayWish'].includes(key) ? 3 : 1} value={pageContent[key] || ''} onChange={(event) => updateField(key, event.target.value)} /></label>)}
+      <h3 className="customize-subhead">Memory entries</h3>{pageContent.memories.map((memory, index) => <div className="customize-memory" key={index}><strong>Memory {index + 1}</strong>{[['label','Small label'],['heading','Heading'],['caption','Photo caption'],['note','Story'],['image','Photo filename']].map(([key,label]) => <label className="customize-field" key={key}>{label}<textarea rows={key === 'note' ? 2 : 1} value={memory[key] || ''} onChange={(event) => setPageContent((current) => ({...current, memories: current.memories.map((item, i) => i === index ? {...item, [key]: event.target.value} : item)}))}/></label>)}</div>)}
+      {pageContent.filmPhotos.map((photo, index) => <label className="customize-field" key={`film-${index}`}>Film photo {index + 1} filename<textarea value={photo || ''} onChange={(event) => setPageContent((current) => ({...current, filmPhotos: current.filmPhotos.map((item, i) => i === index ? event.target.value : item)}))}/></label>)}
+      <label className="customize-field">Music file path<textarea value={pageContent.musicPath || ''} placeholder="/assets/music/birthday-song.mp3" onChange={(event) => updateField('musicPath', event.target.value)}/></label>
+      <div className="customize-actions"><button onClick={resetContent} className="reset-custom">Reset template</button><button onClick={saveContent} className="save-custom">Save changes</button></div>
+    </aside>}
     <Opening onOpen={reveal} opened={opened}/>
     <MusicControl playing={playing} unavailable={audioUnavailable} onToggle={toggleMusic}/>
     <div className={`experience ${opened ? 'experience-opened' : ''}`}><div className="book-intro"><span className="eyebrow">A BOOK OF LITTLE THINGS</span>

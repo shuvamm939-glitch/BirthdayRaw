@@ -4,7 +4,7 @@ A little birthday scrapbook made with React and Vite, put together with photos, 
 
 The idea is simple: open an envelope, turn through a collection of scrapbook-style pages, revisit some memories and find a few personal notes along the way.
 
-The design uses a burgundy background, paper-style pages, Polaroid frames, a film strip and a handwritten-style letter. The words, photos and music are all kept separate from the main components, so they're easy to change without having to dig through the UI code.
+The design uses a burgundy background, paper-style pages, Polaroid frames, a film strip and a handwritten-style letter. Open **✎ Customize** on the page to change the site name, recipient, occasion wording, messages, photos, captions and music path. Choose **Save changes** to keep the changes in this browser on this device. Use **Reset template** to clear the saved customization. Each browser and device has its own saved version. To change the shared starting template, edit `src/data/birthdayContent.js`.
 
 ## Getting started
 
@@ -158,7 +158,7 @@ Here's what each field controls:
 | `hiddenNote` | Message revealed through the little note interaction. |
 | `birthdayWish` | Message revealed through the birthday wish interaction. |
 
-The recipient is currently set up for **Pratyusha Ghosh**. Change it in the data file if needed.
+The starting content is a generic template. You can customize it in the site editor or change the data file to set your own shared defaults.
 
 For longer messages, JavaScript strings support `\n` for line breaks:
 
@@ -228,7 +228,7 @@ dist/
 To run a local preview of that build:
 
 ```bash
-npm run preview
+npm.cmd run preview
 ```
 
 On Windows PowerShell, use:
