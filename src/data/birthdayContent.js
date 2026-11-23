@@ -1,4 +1,4 @@
-// Edit your words and image paths here. Add photographs under public/assets/photos/.
+﻿// Edit your words and image paths here. Add photographs under public/assets/photos/.
 // Leave an image path empty to keep its handmade placeholder.
 export const birthdayContent = {
   siteTitle: "A Little Memory Book",
@@ -36,4 +36,30 @@ export const birthdayContent = {
   signature: "[Your name]",
   hiddenNote: "[WRITE YOUR LITTLE NOTE HERE]",
   birthdayWish: "[WRITE YOUR BIRTHDAY WISH HERE]",
+  littleReminders: [
+    "You make ordinary days feel special.",
+    "Your laugh is one of my favorite sounds.",
+    "The world is warmer with you in it.",
+    "You deserve all the care you give to everyone else.",
+    "You are loved, exactly as you are.",
+  ],
+  // Edit these lines to personalize the birthday surprise. Images live in public/assets/photos/.
+  teddySurprise: {
+    photo: "birthday-illustration.jpg",
+    cakePhoto: "birthday-cat.jpg",
+    greeting: "Happy Birthday!",
+    noButtonText: "No worries, you deserve a celebration anyway!",
+    bestWish: "May this year bring you soft mornings, belly laughs, brave new adventures, and all the love you give to everyone else.",
+  },
 };
+
+// Small, editable settings for the page-wide decorative cat stars.
+export const twinklingCatsConfig = {
+  enabled: true,
+  gifPath: "/assets/decorations/cat.gif",
+  desktopCount: 22,
+  mobileCount: 11,
+  maxOpacity: 0.52,
+};
+
+

@@ -4,7 +4,7 @@ A little birthday scrapbook made with React and Vite, put together with photos, 
 
 The idea is simple: open an envelope, turn through a collection of scrapbook-style pages, revisit some memories and find a few personal notes along the way.
 
-The design uses a burgundy background, paper-style pages, Polaroid frames, a film strip and a handwritten-style letter. Open **✎ Customize** on the page to change the site name, recipient, occasion wording, messages, photos, captions and music path. Choose **Save changes** to keep the changes in this browser on this device. Use **Reset template** to clear the saved customization. Each browser and device has its own saved version. To change the shared starting template, edit `src/data/birthdayContent.js`.
+The design uses a burgundy background, paper-style pages, Polaroid frames, a film strip and a handwritten-style letter. Open **Edit page** to change the site name, recipient, occasion wording and messages. Choose **Save changes** to keep text changes in this browser on this device. The editor also lets you choose a replacement cat GIF, saved locally in that browser. Use **Reset template** for text or **Use bundled GIF** to restore the original cat animation. Photos, music and the default cat GIF are in the `public/assets/` folders.
 
 ## Getting started
 
@@ -54,6 +54,23 @@ There's also a small music control in the corner of the page for pausing and res
 
 If the audio file is missing or the browser cannot play it, the scrapbook will still open and work normally. Only the music will be unavailable.
 
+## Changing the twinkling cat GIF
+
+Open **Edit page**, choose a GIF under **Twinkling cat GIF**, and the page will use it right away. The selected file is saved in browser storage on this device only; it does not upload anywhere or alter the project. GIFs must be 2 MB or smaller. Choose **Use bundled GIF** to switch back.
+
+To change the default GIF for the project, replace this file with your own GIF while keeping the same filename:
+
+```text
+public/assets/decorations/cat.gif
+```
+
+The animation settings are in `src/data/birthdayContent.js` under `twinklingCatsConfig`:
+
+- `desktopCount` and `mobileCount` set how many cats appear.
+- `maxOpacity` controls their brightest point.
+- `gifPath` sets the default GIF path.
+
+The cat size and twinkle timing are set in `src/main.jsx` and `src/styles.css`. Current sizes range from 52 to 75 pixels on desktop and cap at 52 pixels on mobile.
 ## Adding photographs
 
 All photographs belong in:
@@ -123,6 +140,8 @@ filmPhotos: [
 A filename is enough; the application looks for it inside `public/assets/photos/`.
 
 You can leave an image field empty (`""`) if you don't want to use a photograph in that particular frame.
+
+The envelope's **Open me** button starts a short balloon and falling-paper effect. The **Click here** surprise shows the birthday illustration, asks the recipient to make a wish, then opens a celebration with a layered cake, candles, floating balloons and falling birthday banners. The supplied waving-cat image appears as the cake topper. Both local images are in `public/assets/photos/`: `birthday-illustration.jpg` and `birthday-cat.jpg`. Update their filenames and the greeting and wish text in `src/data/birthdayContent.js`.
 
 Images are fitted into the existing scrapbook layouts, so some cropping is expected depending on their dimensions. Keep the original photos if you want to use them elsewhere.
 
@@ -254,28 +273,3 @@ For Vercel or Netlify:
 Before sharing the link, check that the photographs and MP3 file are included in the repository and that their paths are correct.
 
 It's also worth opening the deployed site on a phone and checking the envelope animation, page layout, music controls, photo lightbox and interactive notes.
-
-## GitHub Pages Deployment
-
-The project deploys to GitHub Pages through GitHub Actions whenever you push to the `main` branch.
-
-1. Commit and push your changes from the project folder:
-
-   ```bash
-   git add .
-   git commit -m "Update birthday website"
-   git push origin main
-   ```
-
-2. In the GitHub repository, open **Settings → Pages** and set **Source** to **GitHub Actions**.
-3. Check the **Actions** tab in the repository to see the build and deployment status.
-4. After a successful deployment, the website will be available at <https://dominator1237479.github.io/Birtday-01-host/>.
-5. Future pushes to `main` automatically build and publish the latest website.
-
-GitHub Pages on a free account requires a public repository. The published website is visible to anyone with the link.
-
----
-
-Made with a little time, a lot of memories, and the intention of making someone's birthday a bit more special.
-
-12
